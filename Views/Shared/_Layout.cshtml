@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - E-Commerce Procurement System</title>
-    <script type="importmap"></script>
+    @* Removed the empty importmap script tag for clarity, add back if needed for specific JS modules *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ECommerceProcurementSystem.styles.css" asp-append-version="true" />
@@ -19,17 +19,21 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @* --- Corrected Navigation Links START --- *@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data Exploration">Data Exploration</a>
+                            @* Corrected action name (no space), points to HomeController *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="DataExploration">Data Exploration</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About Us">About Us</a>
+                            @* Corrected controller and action name (Index is standard) *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AboutUs" asp-action="Index">About Us</a>
                         </li>
                     </ul>
+                    @* --- Corrected Navigation Links END --- *@
                 </div>
             </div>
         </nav>

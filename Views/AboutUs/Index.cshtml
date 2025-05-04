@@ -1,46 +1,67 @@
 ﻿@{
     ViewData["Title"] = "About Us";
-   
 }
 
-<header>
-    <h1>Meet the Team</h1>
-    <nav>
-        <a asp-controller="Home" asp-action="Index">Home</a>
-        <a href="/Data">Data Visualization</a> 
-        <a asp-controller="About" asp-action="Index">About Us</a>
-    </nav>
-</header>
+@* Font Awesome icons are assumed to be loaded via _Layout.cshtml or another CSS link *@
 
-<main>
-    <section class="team">
-        <h2>Team Members</h2>
-        <ul>
-            <li><strong>Team Member 1</strong> – Team Lead & Frontend Developer</li>
-            <li><strong>Team Member 2</strong> – Data Model Architect & Chart.js Developer</li>
-            <li><strong>Team Member 3</strong> – Git/GitHub Coordinator & CRUD Logic Planner</li>
-            <li><strong>Team Member 4</strong> – UI/UX Designer & Documentation Specialist</li>
-        </ul>
-    </section>
+<h1><i class="fas fa-info-circle"></i> About Us</h1>
+<hr />
 
-    <section class="model">
-        <h2>Logical Data Model</h2>
-        <img src="~/images/data-model.png" alt="Logical Data Model showing one-to-many relationships" style="max-width: 100%; height: auto;">
-        <p>
-            The data model features two primary one-to-many relationships:<br />
-            <strong>1)</strong> One <em>Customer</em> can place many <em>Orders</em>.<br />
-            <strong>2)</strong> One <em>Product</em> can appear in many <em>OrderDetails</em>.<br /><br />
-            Keys are properly structured with foreign and primary key constraints for future database and API integration.
-        </p>
-    </section>
+<section class="team">
+    <h2><i class="fas fa-users"></i> Team Members</h2>
+    <div class="team-grid">
+        <div class="team-member">
+            @* Updated filename for Martin's image below *@
+            <img src="~/images/Martin.png" alt="Martin Zuluaga Ospina" class="team-photo">
+            <h3><i class="fas fa-user-tie"></i> Martin Zuluaga Ospina</h3>
+            <p>Team Lead & Frontend Developer</p>
+        </div>
+        <div class="team-member">
+            <img src="~/images/xintong.jpeg" alt="Xintong Zou" class="team-photo">
+            <h3><i class="fas fa-database"></i> Xintong Zou</h3>
+            <p>Data Model Architect & Chart.js Developer</p>
+        </div>
+        <div class="team-member">
+            <img src="~/images/tsailing.jpg" alt="TsaiLing Duan" class="team-photo">
+            <h3><i class="fas fa-code-branch"></i> TsaiLing Duan</h3>
+            <p>Git/GitHub Coordinator & CRUD Logic Planner</p>
+        </div>
+        <div class="team-member">
+            <img src="~/images/Carolina.jpg" alt="Carolina Aldana Yabur" class="team-photo">
+            <h3><i class="fas fa-paint-brush"></i> Carolina Aldana Yabur</h3>
+            <p>UI/UX Designer & Documentation Specialist</p>
+        </div>
+    </div>
+</section>
 
-    <section class="github">
-        <h2>GitHub Repository</h2>
-        <p>Access our source code and collaboration history on GitHub:</p>
-        <a href="https://github.com/your-repo-link" target="_blank">View Project Repository</a>
-    </section>
-</main>
+<section class="model" style="margin-top: 20px;">
+    @* Added margin for spacing *@
+    <h2><i class="fas fa-project-diagram"></i> Logical Data Model</h2>
+    <p>
+        The Entity Relationship Diagram (ERD) outlines the foundational structure of the eCommerce sales data, which will serve as the basis for developing a web application using the MVC (Model-View-Controller) framework.
+        The data model is built around three main entities: City, Vendor, and AnnualSale.
+        This design follows a normalized structure, ensuring efficient data storage, simplified maintenance, and optimized querying for analytical and reporting purposes.
+    </p>
 
-<footer>
-    <p>&copy; 2025 E-Commerce Prototype Team</p>
-</footer>
+    <img src="~/images/data-model.png" alt="Logical Data Model showing one-to-many relationships" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;"> @* Added style for clarity *@
+</section>
+
+<section class="github" style="margin-top: 20px;">
+    @* Added margin for spacing *@
+    <h2><i class="fab fa-github"></i> GitHub Repository</h2>
+    @* Make sure this link points to the README as per requirements if needed *@
+    <a href="https://github.com/TLduan/Assignment-3.git" target="_blank" class="btn btn-dark github-link">
+        @* Used Bootstrap button style *@
+        <i class="fab fa-github"></i> View Project Repository
+    </a>
+</section>
+
+<section class="challenges" style="margin-top: 20px;">
+    @* Added margin for spacing *@
+    <h2><i class="fas fa-lightbulb me-2"></i> Challenges and Solutions</h2>
+    @* --- Add content for challenges and solutions here --- *@
+    <p>
+        Details about technical challenges faced and their solutions will be documented in the GitHub repository's README file.
+        @* Example: One challenge was integrating the external API due to unclear documentation. Solution involved using Postman to test endpoints... *@
+    </p>
+</section>

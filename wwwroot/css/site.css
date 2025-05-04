@@ -1,31 +1,313 @@
+/* --- Base HTML & Body --- */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+:root {
+    /* Define theme colors - Using Blues */
+    --primary-blue: #0d6efd; /* Standard Bootstrap Blue */
+    --dark-blue: #0a58ca; /* Darker Blue for Header/Footer */
+    /* --dark-blue: #003366; */ /* Navy Blue Alternative */
+    --light-text: rgba(255, 255, 255, 0.85); /* Light text for dark background */
+    --light-link-hover: #ffffff; /* White link hover */
+    --body-bg: #ffffff; /* White background for content */
+    --body-text: #212529; /* Standard dark text */
+    --section-border-color: #dee2e6; /* Light gray for borders */
+    --footer-height: 60px;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--body-bg);
+    color: var(--body-text);
+    padding-top: 70px; /* Adjust based on final navbar height */
+    margin-bottom: var(--footer-height);
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Common clean sans-serif stack */
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+main {
+    flex-grow: 1; /* Allows main content to fill space */
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* --- Focus Ring Style --- */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #0d6efd; /* Blue focus ring */
 }
+
+/* --- Header / Navbar Styling --- */
+header .navbar {
+    background-color: var(--dark-blue) !important;
+    border-bottom: none !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+
+    header .navbar.navbar-light .navbar-brand {
+        color: var(--light-link-hover);
+        font-weight: 600; /* Slightly bolder */
+    }
+
+        header .navbar.navbar-light .navbar-brand:hover {
+            color: var(--light-link-hover);
+        }
+
+    header .navbar.navbar-light .nav-link {
+        color: var(--light-text);
+        padding-left: 0.8rem;
+        padding-right: 0.8rem;
+        border-radius: 4px; /* Slight rounding on hover background */
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+        header .navbar.navbar-light .nav-link:hover,
+        header .navbar.navbar-light .nav-link:focus {
+            color: var(--light-link-hover);
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+        }
+
+    /* Active Nav Link Style */
+    header .navbar.navbar-light .nav-item .nav-link.active {
+        color: var(--light-link-hover);
+        font-weight: 500;
+    }
+
+
+    header .navbar.navbar-light .navbar-toggler {
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    header .navbar.navbar-light .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+/* --- General Content Styling (Affects all pages) --- */
+.container {
+    max-width: 1140px; /* Or your preferred max width */
+}
+
+h1, .h1 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--dark-blue);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--section-border-color);
+    padding-bottom: 0.5rem;
+}
+
+h2, .h2 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+h3, .h3 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: #444;
+}
+
+h4, .h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+a {
+    color: var(--primary-blue);
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+/* --- Button Styling (Leveraging Bootstrap defaults but ensuring consistency) --- */
+.btn {
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-link {
+    text-decoration: none;
+}
+
+/* --- Form Styling (Affects Create/Edit pages) --- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+}
+
+.control-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* --- Table Styling (Affects Index/Read pages) --- */
+.table {
+    margin-top: 1rem;
+}
+
+    .table thead {
+        background-color: #e9ecef; /* Light gray header */
+        /* background-color: #cfe2ff; */ /* Lighter blue alternative */
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        padding: 0.75rem;
+    }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.03);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,.05);
+}
+
+.table-action-link {
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+/* For Edit | Details | Delete links */
+
+/* --- Footer Styling --- */
+footer.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: var(--footer-height);
+    line-height: var(--footer-height);
+    background-color: var(--dark-blue);
+    color: var(--light-text);
+    border-top: none !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.9rem;
+}
+
+    footer.footer .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    footer.footer a {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 500;
+    }
+
+        footer.footer a:hover {
+            color: var(--light-link-hover);
+        }
+
+/* --- Styles for About Us Page (Keep/Adjust Existing) --- */
+.team-photo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.team-member {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+    .team-member h3 {
+        color: var(--primary-blue);
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+        .team-member h3 i {
+            margin-right: 8px;
+        }
+
+    .team-member p {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+.data-model-image {
+    max-width: 100%;
+    width: 700px;
+    height: auto;
+    display: block;
+    margin: 15px auto;
+    border: 1px solid #ccc;
+}
+
+.model, .github, .challenges, .team {
+    margin-bottom: 2rem;
+}
+
+.github-link i {
+    margin-right: 5px;
+}
+
+/* --- Styles for Home Page CRUD Buttons --- */
+.crud-buttons {
+    margin-top: 20px;
+}
+
+    .crud-buttons .button-group a {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+/* Add spacing */
+
