@@ -43,15 +43,3 @@
         </p>
     </div>
 </div> @* End of row div *@
-
-@* Added CRUD Buttons Section Below *@
-<hr /> @* Optional: Add a horizontal rule for separation *@
-<section class="crud-buttons" style="margin-top: 20px;">
-    <h2><i class="fas fa-cogs"></i> Explore Annual Sale Amount CRUD</h2> @* Updated heading *@
-    <div class="button-group">
-        @* Links point to AnnualSaleAmountController Actions *@
-        <a asp-controller="AnnualSaleAmount" asp-action="Create" class="btn btn-primary"><i class="fas fa-plus"></i> Create Sale Amount</a>
-        <a asp-controller="AnnualSaleAmount" asp-action="Index" class="btn btn-secondary"><i class="fas fa-eye"></i> Read Sale Amounts</a>
-        @* Update/Delete actions are typically initiated from the Index view listing items *@
-    </div>
-</section>
