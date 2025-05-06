@@ -5,6 +5,20 @@ html {
     min-height: 100%;
 }
 
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 1.5rem;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+
+    .feature-card {
+        margin-bottom: 20px;
+    }
+}
+
 @media (min-width: 768px) {
     html {
         font-size: 16px;
@@ -46,51 +60,83 @@ main {
 /* --- Header / Navbar Styling --- */
 header .navbar {
     background-color: var(--dark-blue) !important;
+    background: linear-gradient(135deg, var(--dark-blue) 0%, #2a4365 100%) !important;
     border-bottom: none !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1030;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
 }
 
     header .navbar.navbar-light .navbar-brand {
         color: var(--light-link-hover);
-        font-weight: 600; /* Slightly bolder */
+        font-weight: 600;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        margin-right: 1.5rem;
     }
 
         header .navbar.navbar-light .navbar-brand:hover {
             color: var(--light-link-hover);
+            transform: translateY(-1px);
         }
 
     header .navbar.navbar-light .nav-link {
         color: var(--light-text);
-        padding-left: 0.8rem;
-        padding-right: 0.8rem;
-        border-radius: 4px; /* Slight rounding on hover background */
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
+        margin: 0 0.25rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
     }
 
         header .navbar.navbar-light .nav-link:hover,
         header .navbar.navbar-light .nav-link:focus {
-            color: var(--light-link-hover);
-            background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
 
     /* Active Nav Link Style */
     header .navbar.navbar-light .nav-item .nav-link.active {
-        color: var(--light-link-hover);
-        font-weight: 500;
+        color: white;
+        font-weight: 600;
+        background-color: rgba(255, 255, 255, 0.2);
     }
 
+        header .navbar.navbar-light .nav-item .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
 
     header .navbar.navbar-light .navbar-toggler {
-        border-color: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.3);
+        padding: 0.5rem;
+        transition: all 0.3s ease;
     }
+
+        header .navbar.navbar-light .navbar-toggler:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
 
     header .navbar.navbar-light .navbar-toggler-icon {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        width: 1.25em;
+        height: 1.25em;
     }
 
 /* --- General Content Styling (Affects all pages) --- */
@@ -299,15 +345,3 @@ footer.footer {
 .github-link i {
     margin-right: 5px;
 }
-
-/* --- Styles for Home Page CRUD Buttons --- */
-.crud-buttons {
-    margin-top: 20px;
-}
-
-    .crud-buttons .button-group a {
-        margin-right: 10px;
-        margin-bottom: 10px;
-    }
-/* Add spacing */
-
