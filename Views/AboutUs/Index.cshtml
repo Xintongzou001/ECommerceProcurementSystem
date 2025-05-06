@@ -41,9 +41,8 @@
     </p>
     <ul>
         <li><strong>AnnualReport:</strong> Links to <code>City</code> and <code>Vendor</code>, contains year and total sale amount.</li>
-        <li><strong>PurchaseOrder:</strong> Links to <code>Vendor</code> and <code>MasterAgreement</code>, and has many <code>PurchaseOrderLine</code> entries.</li>
-        <li><strong>PurchaseOrderLine:</strong> Represents line items in a purchase order, links to <code>Commodity</code>.</li>
-        <li><strong>City, Vendor, Commodity, MasterAgreement:</strong> Reference tables for normalization and data integrity.</li>
+        <li><strong>PurchaseOrder:</strong> Links to <code>Vendor</code> and <code>Commodity</code>, and has many <code>PurchaseOrderLine</code> entries.</li>
+        <li><strong>City, Vendor, Commodity:</strong> Reference tables for normalization and data integrity.</li>
     </ul>
 
     <img src="~/images/data-model.png" alt="Logical Data Model showing one-to-many relationships" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
