@@ -1,0 +1,77 @@
+﻿@* Define the model type for the view *@
+@model IEnumerable<ECommerceProcurementSystem.Models.PurchaseOrder>
+@using System.Globalization // Needed for CultureInfo if formatting currency explicitly
+
+@{
+    ViewData["Title"] = "Purchase Orders (API)"; // Clarify data source in title
+}
+
+<h2 class="mb-3">Purchase Orders <span class="badge bg-secondary">from API</span></h2> @* Added badge *@
+
+@* Check if the Model has any data before rendering the table *@
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        No purchase orders found or failed to load data from the API. Please check configuration and API status.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped table-hover">
+        @* Added hover effect *@
+        <thead>
+            <tr>
+                <th>PO Number</th>
+                <th>Vendor</th>
+                <th class="text-center">Total Lines</th> @* Centered header *@
+                <th class="text-end">Grand Total</th>   @* Removed ($) for cleaner formatting below *@
+                <th></th> @* Empty header for the Actions column *@
+            </tr>
+        </thead>
+        <tbody>
+            @* Loop through each PurchaseOrder object in the Model *@
+            @foreach (var po in Model)
+            {
+                // Calculate the total amount for the current purchase order's lines
+                // Handles cases where Line_Item_Total_Amount might be null
+                var total = po.Lines.Sum(l => l.Line_Item_Total_Amount ?? 0);
+                <tr>
+                    <td>
+                        @* Display the Purchase Order number *@
+                        @po.Purchase_Order
+                    </td>
+                    <td>
+                        @* Safely display the Vendor Name using null-conditional operator *@
+                        @po.Vendor?.VendorName
+                    </td>
+                    <td class="text-center">
+                        @* Centered data *@
+                        @* Display the count of line items for this PO *@
+                        @po.Lines.Count
+                    </td>
+                    <td class="text-end">
+                        @* Display the calculated total, formatted as currency *@
+                        @* Using CultureInfo.CurrentCulture ensures correct local currency format *@
+                        @total.ToString("C", CultureInfo.CurrentCulture)
+                        @* Alternative: @total.ToString("N2") for just number format with 2 decimals *@
+                    </td>
+                    <td>
+                        @* --- ADDED DETAILS LINK --- *@
+                        @* Add a link to the Details action for this specific PO *@
+                        <a asp-action="Details"
+                           asp-controller="PurchaseOrders"
+                           asp-route-id="@po.Purchase_Order"
+                           class="btn btn-sm btn-outline-info table-action-link">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* Basic Pagination Indication (requires controller support for total pages) *@
+    @if (ViewBag.Page != null && ViewBag.Page > 0)
+    {
+        <p>Displaying page @ViewBag.Page.</p>
+        @* Add Next/Previous links here if pagination logic is fully implemented in controller/service *@
+    }
+}

@@ -1,0 +1,56 @@
+﻿@model ECommerceProcurementSystem.Models.AnnualReport
+
+@{
+    // Setting the title for the page
+    ViewData["Title"] = "Delete Annual Report";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this record?</h3> @* Made confirmation clearer *@
+<div>
+    <h4>Annual Report</h4> @* Updated heading for consistency *@
+    <hr />
+    <dl class="row">
+        @* Displaying basic properties directly from the Model *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SaleAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SaleAmount)
+        </dd>
+
+        @* Displaying related data labels - using DisplayNameFor for navigation properties is okay *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @* Display the CityID directly from the model to avoid null reference warning *@
+            @Html.DisplayFor(model => model.CityID)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Vendor)
+        </dt>
+        <dd class="col-sm-10">
+            @* Display the Vendor_Code directly from the model to avoid null reference warning *@
+            @Html.DisplayFor(model => model.Vendor_Code)
+            @* Consider displaying Vendor Name here if available/desired: @Model.Vendor?.VendorName *@
+        </dd>
+    </dl>
+
+    @* Form for submitting the delete request *@
+    <form asp-action="Delete">
+        @* Hidden input holds the ID of the record to delete *@
+        <input type="hidden" asp-for="ID" />
+        @* Submit button triggers the DeleteConfirmed action *@
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        @* Link to go back to the Index page *@
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

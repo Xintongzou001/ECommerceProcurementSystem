@@ -19,21 +19,24 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @* --- Corrected Navigation Links START --- *@
+                    @* --- Updated Navigation Links START --- *@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            @* Corrected action name (no space), points to HomeController *@
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="DataExploration">Data Exploration</a>
+                            @* Changed controller to AnnualReport and link text *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AnnualReport" asp-action="Index">Annual Reports</a>
                         </li>
                         <li class="nav-item">
-                            @* Corrected controller and action name (Index is standard) *@
+                            @* Added link for API-fetched Purchase Orders *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="PurchaseOrders" asp-action="Index">Purchase Orders</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AboutUs" asp-action="Index">About Us</a>
                         </li>
                     </ul>
-                    @* --- Corrected Navigation Links END --- *@
+                    @* --- Updated Navigation Links END --- *@
                 </div>
             </div>
         </nav>
@@ -46,6 +49,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
+            @* Corrected year based on current date from previous context, adjust if needed *@
             &copy; 2025 - E-Commerce Procurement System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
