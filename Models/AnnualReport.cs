@@ -13,7 +13,7 @@ namespace ECommerceProcurementSystem.Models
 
         // Foreign key properties (value types, generally okay with CS8618 unless complex constructor logic exists)
         public int CityID { get; set; }
-        public int Vendor_Code { get; set; } // Keep as int for now, but see note below
+        public string Vendor_Code { get; set; } = string.Empty;
 
         public int Year { get; set; }
         public decimal SaleAmount { get; set; }
