@@ -20,21 +20,23 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @* --- Corrected Navigation Links START --- *@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            @* Corrected action name (no space), points to HomeController *@
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AnnualSaleAmount" asp-action="Index">Data Exploration</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AnnualReport" asp-action="Index">Annual Reports</a>
                         </li>
                         <li class="nav-item">
-                            @* Corrected controller and action name (Index is standard) *@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="PurchaseOrders" asp-action="Index">Purchase Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="DataExploration">Data Exploration</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AboutUs" asp-action="Index">About Us</a>
                         </li>
                     </ul>
-                    @* --- Corrected Navigation Links END --- *@
                 </div>
             </div>
         </nav>

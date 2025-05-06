@@ -11,11 +11,18 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient<ExternalDataImportService>();
 
+builder.Services.AddHttpClient<ISocrataService, SocrataService>(client =>
+{
+    var config = builder.Configuration;
+    var baseUri = config["Socrata:BaseUri"];
+    client.BaseAddress = new Uri(baseUri);
+    var appToken = config["Socrata:AppToken"];
+    if (!string.IsNullOrEmpty(appToken))
+        client.DefaultRequestHeaders.Add("X-App-Token", appToken);
+});
+
 builder.Services.AddDbContext<ProcurementContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-
 
 var app = builder.Build();
 
@@ -38,6 +45,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

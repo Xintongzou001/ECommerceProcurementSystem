@@ -49,14 +49,12 @@
                     @Html.DisplayFor(modelItem => item.SaleAmount)
                 </td>
                 <td>
-                    @* Display the CityID directly from the item to avoid null reference warning *@
-                    @Html.DisplayFor(modelItem => item.CityID)
-                    @* Optionally display City Name: @item.City?.CityName *@
+                    @* Display City Name if available, fallback to CityID *@
+                    @(item.City != null ? item.City.CityName : item.CityID.ToString())
                 </td>
                 <td>
-                    @* Display the Vendor_Code directly from the item to avoid null reference warning *@
-                    @Html.DisplayFor(modelItem => item.Vendor_Code)
-                    @* Optionally display Vendor Name: @item.Vendor?.VendorName *@
+                    @* Display Vendor Name if available, fallback to Vendor_Code *@
+                    @(item.Vendor != null ? item.Vendor.VendorName : item.Vendor_Code)
                 </td>
                 <td>
                     @* Action links for Edit, Details, Delete for the current item *@
