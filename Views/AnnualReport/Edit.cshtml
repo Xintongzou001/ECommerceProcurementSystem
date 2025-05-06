@@ -1,0 +1,58 @@
+﻿@* Change model type *@
+@model ECommerceProcurementSystem.Models.AnnualReport
+
+@{
+    ViewData["Title"] = "Edit Annual Report"; // Update title
+}
+
+<h1>Edit Annual Report</h1> @* Update heading *@
+
+<h4>Annual Report</h4> @* Update heading *@
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @* The form action should point to the Edit action in AnnualReportController *@
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @* Hidden field for the ID is correct *@
+            <input type="hidden" asp-for="ID" />
+
+            @* Fields for CityID, Vendor_Code, Year, SaleAmount use model binding *@
+            <div class="form-group">
+                <label asp-for="CityID" class="control-label"></label>
+                @* Use the correct ViewBag data source populated in the controller *@
+                <select asp-for="CityID" class="form-control" asp-items="ViewBag.CityID"></select>
+                <span asp-validation-for="CityID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vendor_Code" class="control-label"></label>
+                @* Use the correct ViewBag data source populated in the controller *@
+                <select asp-for="Vendor_Code" class="form-control" asp-items="ViewBag.Vendor_Code"></select>
+                <span asp-validation-for="Vendor_Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SaleAmount" class="control-label"></label>
+                <input asp-for="SaleAmount" class="form-control" />
+                <span asp-validation-for="SaleAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                @* Added margin-top for spacing *@
+                <input type="submit" value="Save" class="btn btn-primary" />
+                | <a asp-action="Index">Back to List</a> @* Added Back to List link consistent with others *@
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Removed redundant Back to List link here *@
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,53 @@
+﻿@model ECommerceProcurementSystem.Models.AnnualReport
+
+@{
+    // Setting the title for the page
+    ViewData["Title"] = "Annual Report Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Annual Report</h4> @* Updated heading for consistency *@
+    <hr />
+    <dl class="row">
+        @* Displaying basic properties directly from the Model *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SaleAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SaleAmount)
+        </dd>
+
+        @* Displaying related data labels - using DisplayNameFor for navigation properties is okay *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @* Display the CityID directly from the model to avoid null reference warning *@
+            @Html.DisplayFor(model => model.CityID)
+            @* Consider displaying City Name here if available/desired: @Model.City?.CityName *@
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Vendor)
+        </dt>
+        <dd class="col-sm-10">
+            @* Display the Vendor_Code directly from the model to avoid null reference warning *@
+            @Html.DisplayFor(model => model.Vendor_Code)
+            @* Consider displaying Vendor Name here if available/desired: @Model.Vendor?.VendorName *@
+        </dd>
+    </dl>
+</div>
+<div class="mt-3">
+    @* Added some margin-top for spacing *@
+    @* Link to the Edit action for this specific record *@
+    <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-secondary">Edit</a> | @* Added button class *@
+    @* Link to go back to the Index page *@
+    <a asp-action="Index">Back to List</a>
+</div>

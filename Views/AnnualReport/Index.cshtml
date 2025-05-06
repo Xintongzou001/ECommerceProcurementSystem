@@ -1,0 +1,70 @@
+﻿@* Model is a collection of AnnualReport objects *@
+@model IEnumerable<ECommerceProcurementSystem.Models.AnnualReport>
+
+@{
+    // Setting the title for the page
+    ViewData["Title"] = "Annual Reports";
+}
+
+<h1>Annual Reports</h1> @* Updated heading *@
+
+<p>
+    @* Link to the Create action to add a new report *@
+    <a asp-action="Create" class="btn btn-primary">Create New</a> @* Added button class *@
+</p>
+<table class="table table-striped table-hover">
+    @* Added Bootstrap table classes *@
+    <thead>
+        <tr>
+            <th>
+                @* Display column headers using DisplayNameFor based on the model's properties *@
+                @* Using FirstOrDefault() here to access properties of the element type for DisplayNameFor *@
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().SaleAmount)
+            </th>
+            <th>
+                @* Using DisplayNameFor for navigation property is okay for the header text *@
+                @Html.DisplayNameFor(model => model.FirstOrDefault().City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Vendor)
+            </th>
+            <th></th> @* Empty header for action links column *@
+        </tr>
+    </thead>
+    <tbody>
+        @* Loop through each AnnualReport item in the Model collection *@
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @* Display basic properties directly from the item *@
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td style="text-align: right;">
+                    @* Align currency to the right *@
+                    @* Format SaleAmount as currency *@
+                    @Html.DisplayFor(modelItem => item.SaleAmount)
+                </td>
+                <td>
+                    @* Display the CityID directly from the item to avoid null reference warning *@
+                    @Html.DisplayFor(modelItem => item.CityID)
+                    @* Optionally display City Name: @item.City?.CityName *@
+                </td>
+                <td>
+                    @* Display the Vendor_Code directly from the item to avoid null reference warning *@
+                    @Html.DisplayFor(modelItem => item.Vendor_Code)
+                    @* Optionally display Vendor Name: @item.Vendor?.VendorName *@
+                </td>
+                <td>
+                    @* Action links for Edit, Details, Delete for the current item *@
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-secondary table-action-link">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-info table-action-link">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger table-action-link">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
