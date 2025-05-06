@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using ECommerceProcurementSystem.Models;
 using System.Net; // Required for HttpUtility or Uri
+using System.Text.Json.Serialization;
 
 namespace ECommerceProcurementSystem.Services
 {
@@ -62,12 +63,22 @@ namespace ECommerceProcurementSystem.Services
         public async Task<IReadOnlyList<AnnualReport>> GetAnnualReportsFromSocrataAsync(int limit = 20)
         {
             // Socrata API: https://data.austintexas.gov/resource/3ebq-e9iz.json
-            string uri = $"/resource/{_datasetId}.json?$limit={limit}";
+            // Ensure _datasetId is correctly set to "3ebq-e9iz" for this specific report.
+            // Inside GetAnnualReportsFromSocrataAsync method
+            string annualReportDatasetId = "3ebq-e9iz"; // Explicitly use the correct ID
+            string uri = $"/resource/{annualReportDatasetId}.json?$limit={limit}";
             var rawRows = await _http.GetFromJsonAsync<List<RawRow>>(uri) ?? new();
 
             if (!rawRows.Any())
             {
                 return new List<AnnualReport>();
+            }
+
+            // Log data received to check values
+            Console.WriteLine($"Retrieved {rawRows.Count} records from Socrata API for Annual Reports");
+            foreach (var row in rawRows.Take(5)) // Log a few samples
+            {
+                Console.WriteLine($"Sample for Annual Report: PO={row.purchase_order}, Raw LineItemTotalAmount={row.line_item_total_amount}, Unit Price={row.unit_price}, Quantity={row.quantity_ordered}, VendorCode={row.vendor_code}, City={row.city}, AwardDate={row.award_date}");
             }
 
             // Map to AnnualReport (group by vendor_code, city, and year, sum SaleAmount)
@@ -79,13 +90,22 @@ namespace ECommerceProcurementSystem.Services
                     Vendor_Code = g.Key.vendor_code,
                     CityID = 0, // Will be populated in controller
                     Year = g.Key.Year,
-                    SaleAmount = g.Sum(x => x.line_item_total_amount ?? 0),
-                    // Create a new City object to help with mapping
+                    SaleAmount = g.Sum(x =>
+                        x.line_item_total_amount ?? // Use existing line_item_total_amount if available
+                        (x.unit_price.HasValue && x.quantity_ordered.HasValue ?
+                            x.unit_price.Value * x.quantity_ordered.Value : 0m) // Calculate if possible, else 0. Explicitly use '0m' for decimal.
+                    ),
                     City = new City { CityName = g.Key.city.Trim() }
                 })
-                .Take(limit)
                 .ToList();
-            
+
+            // Log the reports to see if they have valid SaleAmount values
+            Console.WriteLine($"Generated {reports.Count} annual reports");
+            foreach (var report in reports.Take(5)) // Log a few samples
+            {
+                Console.WriteLine($"Report: Vendor={report.Vendor_Code}, City={report.City?.CityName}, Year={report.Year}, Amount={report.SaleAmount}");
+            }
+
             return reports;
         }
 
@@ -157,23 +177,24 @@ namespace ECommerceProcurementSystem.Services
          * Keep this private—only used for deserializing raw API rows.
          * -----------------------------------------------------------*/
         private record RawRow(
-            string purchase_order,
-            string vendor_code,
-            string vendor, // Matches JSON field name
-            string address,
-            string city,
-            string zip,
-            string country,
-            string master_agreement,
-            string contract_name,
-            DateTime? award_date,
-            string commodity_id,
-            string commodity_description,
-            string line_item_description,
-            decimal? quantity_ordered,
-            string unit_of_measure_code,
-            string unit_of_measure_description,
-            decimal? unit_price,
-            decimal? line_item_total_amount);
+            [property: JsonPropertyName("purchase_order")] string? purchase_order,
+            [property: JsonPropertyName("vendor_code")] string? vendor_code,
+            [property: JsonPropertyName("vendor")] string? vendor, // API field name is 'vendor' for vendor name
+            [property: JsonPropertyName("address_line1")] string? address, // API uses 'address_line1'
+            [property: JsonPropertyName("city")] string? city,
+            [property: JsonPropertyName("zip_code")] string? zip,       // API uses 'zip_code'
+            [property: JsonPropertyName("country")] string? country,
+            [property: JsonPropertyName("master_agreement")] string? master_agreement,
+            [property: JsonPropertyName("contract_name")] string? contract_name,
+            [property: JsonPropertyName("award_date")] DateTime? award_date,
+            [property: JsonPropertyName("commodity")] string? commodity_id, // API uses 'commodity' for the commodity code/ID
+            [property: JsonPropertyName("commodity_description")] string? commodity_description,
+            [property: JsonPropertyName("line_item_description")] string? line_item_description,
+            [property: JsonPropertyName("po_qty")] decimal? quantity_ordered,         // API uses 'po_qty'
+            [property: JsonPropertyName("unit_of_measure_code")] string? unit_of_measure_code,
+            [property: JsonPropertyName("unit_of_measure_description")] string? unit_of_measure_description,
+            [property: JsonPropertyName("unit_prc")] decimal? unit_price,             // API uses 'unit_prc'
+            [property: JsonPropertyName("itm_tot_am")] decimal? line_item_total_amount // API uses 'itm_tot_am'
+        );
     }
 }

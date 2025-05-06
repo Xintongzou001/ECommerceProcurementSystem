@@ -25,7 +25,6 @@ namespace ECommerceProcurementSystem.Controllers
         // GET /PurchaseOrders/Details/PO-2024-005432
         public async Task<IActionResult> Details(string id)
         {
-            // <<< --- MODIFIED CODE START --- >>>
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Purchase Order ID cannot be empty.");
@@ -39,7 +38,6 @@ namespace ECommerceProcurementSystem.Controllers
                 // The specific PO was not found via the API
                 return NotFound($"Purchase Order with ID '{id}' not found.");
             }
-            // <<< --- MODIFIED CODE END --- >>>
 
             return View(order);
         }
