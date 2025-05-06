@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ECommerceProcurementSystem.Data;
 using ECommerceProcurementSystem.Models;
+using ECommerceProcurementSystem.Services;
 
 // Ensure namespace is correct
 namespace ECommerceProcurementSystem.Controllers
@@ -16,23 +17,131 @@ namespace ECommerceProcurementSystem.Controllers
     public class AnnualReportController : Controller
     {
         private readonly ProcurementContext _context;
+        private readonly ISocrataService _socrataService;
 
-        public AnnualReportController(ProcurementContext context)
+        /// <summary>
+        /// Controller for managing Annual Reports, including offline CRUD and initial import from Socrata API.
+        /// </summary>
+        public AnnualReportController(ProcurementContext context, ISocrataService socrataService)
         {
             _context = context;
+            _socrataService = socrataService;
         }
 
         // GET: AnnualReport (Index View)
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Use the correct DbSet: AnnualReports
             if (_context.AnnualReports == null)
-            {
                 return Problem("Entity set 'ProcurementContext.AnnualReports' is null.");
+
+            // If no data, import from Socrata API (limit 20)
+            if (!await _context.AnnualReports.AnyAsync())
+            {
+                try
+                {
+                    // Step 1: Get the data from Socrata API
+                    var importedReports = await _socrataService.GetAnnualReportsFromSocrataAsync(20);
+                    
+                    // Step 2: Process vendors first (they're referenced by AnnualReports)
+                    var vendorCodes = importedReports
+                        .Select(r => r.Vendor_Code)
+                        .Distinct()
+                        .ToList();
+                    
+                    foreach (var vendorCode in vendorCodes)
+                    {
+                        if (!await _context.Vendors.AnyAsync(v => v.Vendor_Code == vendorCode))
+                        {
+                            // Create a basic vendor entry if it doesn't exist
+                            _context.Vendors.Add(new Vendor
+                            {
+                                Vendor_Code = vendorCode,
+                                VendorName = vendorCode, // Use code as name temporarily
+                                Address = string.Empty,
+                                City = string.Empty,
+                                Zip = string.Empty,
+                                Country = string.Empty
+                            });
+                        }
+                    }
+                    
+                    // Save vendors to database so they have valid IDs
+                    await _context.SaveChangesAsync();
+                    
+                    // Step 3: Process cities (also referenced by AnnualReports)
+                    var cityDict = new Dictionary<string, int>();
+                    
+                    foreach (var report in importedReports)
+                    {
+                        string? cityName = report.City?.CityName;
+                        
+                        if (!string.IsNullOrEmpty(cityName) && !cityDict.ContainsKey(cityName))
+                        {
+                            // Check if city already exists
+                            var existingCity = await _context.Cities
+                                .FirstOrDefaultAsync(c => c.CityName.ToLower() == cityName.ToLower());
+                            
+                            if (existingCity != null)
+                            {
+                                cityDict[cityName] = existingCity.CityID;
+                            }
+                            else
+                            {
+                                // Create a new city
+                                var newCity = new City { CityName = cityName };
+                                _context.Cities.Add(newCity);
+                                
+                                // Save immediately to get the generated ID
+                                await _context.SaveChangesAsync();
+                                
+                                cityDict[cityName] = newCity.CityID;
+                            }
+                        }
+                    }
+                    
+                    // Step 4: Create AnnualReport entries with correct foreign keys
+                    foreach (var report in importedReports)
+                    {
+                        string? cityName = report.City?.CityName;
+                        
+                        if (!string.IsNullOrEmpty(cityName) && cityDict.ContainsKey(cityName))
+                        {
+                            var newReport = new AnnualReport
+                            {
+                                CityID = cityDict[cityName],
+                                Vendor_Code = report.Vendor_Code,
+                                Year = report.Year,
+                                SaleAmount = report.SaleAmount
+                                // Don't set navigation properties here to avoid tracking issues
+                            };
+                            
+                            _context.AnnualReports.Add(newReport);
+                        }
+                    }
+                    
+                    // Save all annual reports
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception - In a real app, use a proper logging framework
+                    System.Diagnostics.Debug.WriteLine($"Error importing data: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                    }
+                    
+                    // Return problem details
+                    return Problem($"Error importing data: {ex.Message}");
+                }
             }
-            // Use correct DbSet and include navigation properties
-            var annualReports = _context.AnnualReports.Include(a => a.City).Include(a => a.Vendor);
+            
+            // Load reports with related entities for display
+            var annualReports = _context.AnnualReports
+                .Include(a => a.City)
+                .Include(a => a.Vendor);
+                
             return View(await annualReports.ToListAsync());
         }
 

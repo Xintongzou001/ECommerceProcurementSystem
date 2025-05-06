@@ -17,6 +17,11 @@ namespace ECommerceProcurementSystem.Services
         /// Returns a single purchase order and its lines by Purchase Order ID.
         /// Returns null if the purchase order is not found.
         /// </summary>
-        Task<PurchaseOrder?> GetPurchaseOrderByIdAsync(string id); // <<< --- ADD THIS LINE --- >>>
+        Task<PurchaseOrder?> GetPurchaseOrderByIdAsync(string id);
+
+        /// <summary>
+        /// Fetches annual report data from the Socrata API (Austin Open Data portal).
+        /// </summary>
+        Task<IReadOnlyList<AnnualReport>> GetAnnualReportsFromSocrataAsync(int limit = 20);
     }
 }

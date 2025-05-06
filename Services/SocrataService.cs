@@ -33,7 +33,6 @@ namespace ECommerceProcurementSystem.Services
             return MapRawRowsToPurchaseOrders(rawRows);
         }
 
-        // <<< --- ADD THIS ENTIRE METHOD START --- >>>
         public async Task<PurchaseOrder?> GetPurchaseOrderByIdAsync(string id)
         {
             // Use SoQL $where parameter to filter by purchase_order ID.
@@ -55,10 +54,41 @@ namespace ECommerceProcurementSystem.Services
             var purchaseOrders = MapRawRowsToPurchaseOrders(rawRows);
             return purchaseOrders.FirstOrDefault(); // Return the single mapped order, or null if mapping somehow failed
         }
-        // <<< --- ADD THIS ENTIRE METHOD END --- >>>
 
+        /// <summary>
+        /// Fetches annual report data from the Socrata API (Austin Open Data portal).
+        /// Maps the data to the AnnualReport model for offline use.
+        /// </summary>
+        public async Task<IReadOnlyList<AnnualReport>> GetAnnualReportsFromSocrataAsync(int limit = 20)
+        {
+            // Socrata API: https://data.austintexas.gov/resource/3ebq-e9iz.json
+            string uri = $"/resource/{_datasetId}.json?$limit={limit}";
+            var rawRows = await _http.GetFromJsonAsync<List<RawRow>>(uri) ?? new();
 
-        // <<< --- EXTRACTED HELPER METHOD START (from original GetPurchaseOrdersAsync) --- >>>
+            if (!rawRows.Any())
+            {
+                return new List<AnnualReport>();
+            }
+
+            // Map to AnnualReport (group by vendor_code, city, and year, sum SaleAmount)
+            var reports = rawRows
+                .Where(r => !string.IsNullOrEmpty(r.vendor_code) && !string.IsNullOrEmpty(r.city) && r.award_date.HasValue)
+                .GroupBy(r => new { r.vendor_code, r.city, Year = r.award_date.Value.Year })
+                .Select(g => new AnnualReport
+                {
+                    Vendor_Code = g.Key.vendor_code,
+                    CityID = 0, // Will be populated in controller
+                    Year = g.Key.Year,
+                    SaleAmount = g.Sum(x => x.line_item_total_amount ?? 0),
+                    // Create a new City object to help with mapping
+                    City = new City { CityName = g.Key.city.Trim() }
+                })
+                .Take(limit)
+                .ToList();
+            
+            return reports;
+        }
+
         private IReadOnlyList<PurchaseOrder> MapRawRowsToPurchaseOrders(List<RawRow> rawRows)
         {
             // Group by Purchase_Order so each group represents one PO header
@@ -121,7 +151,6 @@ namespace ECommerceProcurementSystem.Services
             }
             return orders;
         }
-        // <<< --- EXTRACTED HELPER METHOD END --- >>>
 
         /* -------------------------------------------------------------
          * Internal DTO that matches the Socrata JSON columns exactly.

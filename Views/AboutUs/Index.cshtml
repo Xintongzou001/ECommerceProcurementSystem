@@ -35,15 +35,18 @@
 </section>
 
 <section class="model" style="margin-top: 20px;">
-    @* Added margin for spacing *@
     <h2><i class="fas fa-project-diagram"></i> Logical Data Model</h2>
     <p>
-        The Entity Relationship Diagram (ERD) outlines the foundational structure of the eCommerce sales data, which will serve as the basis for developing a web application using the MVC (Model-View-Controller) framework.
-        The data model is built around three main entities: City, Vendor, and AnnualSale.
-        This design follows a normalized structure, ensuring efficient data storage, simplified maintenance, and optimized querying for analytical and reporting purposes.
+        The system uses a normalized relational data model, designed for clarity and extensibility. The main entities and their relationships are:
     </p>
+    <ul>
+        <li><strong>AnnualReport:</strong> Links to <code>City</code> and <code>Vendor</code>, contains year and total sale amount.</li>
+        <li><strong>PurchaseOrder:</strong> Links to <code>Vendor</code> and <code>MasterAgreement</code>, and has many <code>PurchaseOrderLine</code> entries.</li>
+        <li><strong>PurchaseOrderLine:</strong> Represents line items in a purchase order, links to <code>Commodity</code>.</li>
+        <li><strong>City, Vendor, Commodity, MasterAgreement:</strong> Reference tables for normalization and data integrity.</li>
+    </ul>
 
-    <img src="~/images/data-model.png" alt="Logical Data Model showing one-to-many relationships" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;"> @* Added style for clarity *@
+    <img src="~/images/data-model.png" alt="Logical Data Model showing one-to-many relationships" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 </section>
 
 <section class="github" style="margin-top: 20px;">
