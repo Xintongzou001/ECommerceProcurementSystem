@@ -14,15 +14,28 @@
     </div>
 </div>
 
+<div class="card mb-4">
+    <div class="card-body">
+        <canvas id="topVendorsChart" style="max-width:100%; height:400px;"></canvas>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <canvas id="salesByCityChart" style="max-width:100%; height:400px;"></canvas>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Chart 1: Annual Sales by Year (Bar)
             fetch('/Home/GetAnnualSalesData')
                 .then(response => response.json())
                 .then(data => {
                     const years = data.map(x => x.year || x.Year);
-                    const sales = data.map(x => x.totalSales || x.TotalSales);
+                    const sales = data.map(x => x.totalSales || x.TotalSales || x.SaleAmount);
                     const ctx = document.getElementById('annualSalesChart').getContext('2d');
                     new Chart(ctx, {
                         type: 'bar',
@@ -53,6 +66,91 @@
                                 },
                                 x: {
                                     title: { display: true, text: 'Year' }
+                                }
+                            }
+                        }
+                    });
+                });
+
+            // Chart 2: Top 5 Vendors by Total Sales
+            fetch('/Home/GetVendorSalesData')
+                .then(response => response.json())
+                .then(data => {
+                    const topVendors = data.slice(0, 5).map(x => x.vendorName || x.VendorName || x.vendor_code || x.VendorCode || 'Unknown');
+                    const topVendorSales = data.slice(0, 5).map(x => x.totalSales || x.TotalSales || x.saleAmount || x.SaleAmount || 0);
+                    const ctxVendors = document.getElementById('topVendorsChart').getContext('2d');
+                    new Chart(ctxVendors, {
+                        type: 'bar',
+                        data: {
+                            labels: topVendors,
+                            datasets: [{
+                                label: 'Total Sales',
+                                data: topVendorSales,
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: {
+                                    display: true,
+                                    text: 'Top 5 Vendors by Total Sales',
+                                    font: { size: 18 }
+                                }
+                            },
+                            indexAxis: 'y',
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    title: { display: true, text: 'Total Sales ($)' }
+                                },
+                                y: {
+                                    title: { display: true, text: 'Vendor' }
+                                }
+                            }
+                        }
+                    });
+                });
+
+            // Chart 3: Sales by City
+            fetch('/Home/GetCitySalesData')
+                .then(response => response.json())
+                .then(data => {
+                    const cityLabels = data.map(x => x.cityName || x.CityName || 'Unknown');
+                    const cityTotals = data.map(x => x.totalSales || x.TotalSales || x.saleAmount || x.SaleAmount || 0);
+                    const ctxCities = document.getElementById('salesByCityChart').getContext('2d');
+                    new Chart(ctxCities, {
+                        type: 'bar',
+                        data: {
+                            labels: cityLabels,
+                            datasets: [{
+                                label: 'Total Sales',
+                                data: cityTotals,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: {
+                                    display: true,
+                                    text: 'Sales by City',
+                                    font: { size: 18 }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: { display: true, text: 'Total Sales ($)' }
+                                },
+                                x: {
+                                    title: { display: true, text: 'City' }
                                 }
                             }
                         }

@@ -19,6 +19,10 @@ This project is a modern ASP.NET Core MVC web application for managing procureme
 ### Internal (Application Endpoints)
 - **/Home/GetAnnualSalesData**
   - Returns annual sales data as JSON for use in Chart.js visualizations on the Data Exploration page.
+- **/Home/GetVendorSalesData**
+  - Returns total sales by vendor (including vendor code and name) as JSON for use in Chart.js visualizations.
+- **/Home/GetCitySalesData**
+  - Returns total sales by city (including city name) as JSON for use in Chart.js visualizations.
 - **/AnnualReport/**
   - Full CRUD endpoints for managing annual reports (Create, Read, Update, Delete).
 - **/PurchaseOrders/**
