@@ -64,21 +64,12 @@ namespace ECommerceProcurementSystem.Services
         {
             // Socrata API: https://data.austintexas.gov/resource/3ebq-e9iz.json
             // Ensure _datasetId is correctly set to "3ebq-e9iz" for this specific report.
-            // Inside GetAnnualReportsFromSocrataAsync method
-            string annualReportDatasetId = "3ebq-e9iz"; // Explicitly use the correct ID
-            string uri = $"/resource/{annualReportDatasetId}.json?$limit={limit}";
+            string uri = $"/resource/{_datasetId}.json?$limit={limit}"; // Make sure _datasetId is "3ebq-e9iz"
             var rawRows = await _http.GetFromJsonAsync<List<RawRow>>(uri) ?? new();
 
             if (!rawRows.Any())
             {
                 return new List<AnnualReport>();
-            }
-
-            // Log data received to check values
-            Console.WriteLine($"Retrieved {rawRows.Count} records from Socrata API for Annual Reports");
-            foreach (var row in rawRows.Take(5)) // Log a few samples
-            {
-                Console.WriteLine($"Sample for Annual Report: PO={row.purchase_order}, Raw LineItemTotalAmount={row.line_item_total_amount}, Unit Price={row.unit_price}, Quantity={row.quantity_ordered}, VendorCode={row.vendor_code}, City={row.city}, AwardDate={row.award_date}");
             }
 
             // Map to AnnualReport (group by vendor_code, city, and year, sum SaleAmount)
@@ -98,13 +89,6 @@ namespace ECommerceProcurementSystem.Services
                     City = new City { CityName = g.Key.city.Trim() }
                 })
                 .ToList();
-
-            // Log the reports to see if they have valid SaleAmount values
-            Console.WriteLine($"Generated {reports.Count} annual reports");
-            foreach (var report in reports.Take(5)) // Log a few samples
-            {
-                Console.WriteLine($"Report: Vendor={report.Vendor_Code}, City={report.City?.CityName}, Year={report.Year}, Amount={report.SaleAmount}");
-            }
 
             return reports;
         }
