@@ -12,7 +12,7 @@ namespace ECommerceProcurementSystem.Models
         public Commodity? Commodity { get; set; }
 
         // Line‑item fields (Strings already initialized, Nullable decimals are fine)
-        public string Line_Item_Description { get; set; } = string.Empty;
+        public string Extended_Description { get; set; } = string.Empty;
         public decimal? Quantity_Ordered { get; set; }
         public string Unit_Of_Measure_Code { get; set; } = string.Empty;
         public string Unit_Of_Measure_Description { get; set; } = string.Empty;

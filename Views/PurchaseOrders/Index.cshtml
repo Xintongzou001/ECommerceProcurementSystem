@@ -26,15 +26,12 @@ else
                 <th>Commodity Description</th>
                 <th>Quantity</th>
                 <th>Line Total</th>
-                <th class="text-center">Total Lines</th>
-                <th class="text-end">Grand Total</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var po in Model)
             {
-                var total = po.Lines.Sum(l => l.Line_Item_Total_Amount ?? 0);
                 var firstLine = po.FirstLine;
                 <tr>
                     <td>@po.Purchase_Order</td>
@@ -44,8 +41,6 @@ else
                     <td>@firstLine?.Commodity?.Commodity_Description</td>
                     <td>@firstLine?.Quantity_Ordered</td>
                     <td>@(firstLine?.Line_Item_Total_Amount?.ToString("C", CultureInfo.CurrentCulture) ?? "")</td>
-                    <td class="text-center">@po.Lines.Count</td>
-                    <td class="text-end">@total.ToString("C", CultureInfo.CurrentCulture)</td>
                     <td>
                         <a asp-action="Details"
                            asp-controller="PurchaseOrders"
