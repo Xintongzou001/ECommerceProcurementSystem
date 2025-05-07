@@ -60,7 +60,7 @@ namespace ECommerceProcurementSystem.Services
         /// Fetches annual report data from the Socrata API (Austin Open Data portal).
         /// Maps the data to the AnnualReport model for offline use.
         /// </summary>
-        public async Task<IReadOnlyList<AnnualReport>> GetAnnualReportsFromSocrataAsync(int limit = 20)
+        public async Task<IReadOnlyList<AnnualReport>> GetAnnualReportsFromSocrataAsync(int limit = 40)
         {
             // Socrata API: https://data.austintexas.gov/resource/3ebq-e9iz.json
             // Ensure _datasetId is correctly set to "3ebq-e9iz" for this specific report.
@@ -82,9 +82,9 @@ namespace ECommerceProcurementSystem.Services
                     CityID = 0, // Will be populated in controller
                     Year = g.Key.Year,
                     SaleAmount = g.Sum(x =>
-                        x.line_item_total_amount ?? // Use existing line_item_total_amount if available
-                        (x.unit_price.HasValue && x.quantity_ordered.HasValue ?
-                            x.unit_price.Value * x.quantity_ordered.Value : 0m) // Calculate if possible, else 0. Explicitly use '0m' for decimal.
+                        x.line_item_total_amount != null && decimal.TryParse(x.line_item_total_amount, out var totalAmount) ? totalAmount :
+                        (x.unit_price != null && x.quantity != null && decimal.TryParse(x.unit_price, out var unitPrice) && decimal.TryParse(x.quantity, out var quantity) ?
+                            unitPrice * quantity : 0m) // Calculate if possible, else 0. Explicitly use '0m' for decimal.
                     ),
                     City = new City { CityName = g.Key.city.Trim() }
                 })
@@ -107,7 +107,7 @@ namespace ECommerceProcurementSystem.Services
                 {
                     Vendor_Code = first.vendor_code,
                     // Corrected: Use VendorName property in Vendor model
-                    VendorName = first.vendor,
+                    VendorName = first.vendor_name,
                     Address = first.address,
                     City = first.city,
                     Zip = first.zip,
@@ -125,7 +125,8 @@ namespace ECommerceProcurementSystem.Services
                 {
                     Purchase_Order = first.purchase_order,
                     Vendor = vendor,
-                    Agreement = agreement
+                    Agreement = agreement,
+                    Vendor_Code = first.vendor_code
                     // Lines collection initialized by default
                 };
 
@@ -143,12 +144,12 @@ namespace ECommerceProcurementSystem.Services
                             CommodityID = row.commodity_id,
                             Commodity_Description = row.commodity_description
                         },
-                        Line_Item_Description = row.line_item_description,
-                        Quantity_Ordered = row.quantity_ordered,
+                        Quantity_Ordered = row.quantity != null && decimal.TryParse(row.quantity, out var quantityOrdered) ? quantityOrdered : null,
                         Unit_Of_Measure_Code = row.unit_of_measure_code,
                         Unit_Of_Measure_Description = row.unit_of_measure_description,
-                        Unit_Price = row.unit_price,
-                        Line_Item_Total_Amount = row.line_item_total_amount
+                        Unit_Price = row.unit_price != null && decimal.TryParse(row.unit_price, out var unitPrice) ? unitPrice : null,
+                        Line_Item_Total_Amount = row.line_item_total_amount != null && decimal.TryParse(row.line_item_total_amount, out var totalAmount) ? totalAmount : null,
+                        Extended_Description = row.extended_description
                     });
                 }
                 orders.Add(po);
@@ -163,22 +164,23 @@ namespace ECommerceProcurementSystem.Services
         private record RawRow(
             [property: JsonPropertyName("purchase_order")] string? purchase_order,
             [property: JsonPropertyName("vendor_code")] string? vendor_code,
-            [property: JsonPropertyName("vendor")] string? vendor, // API field name is 'vendor' for vendor name
-            [property: JsonPropertyName("address_line1")] string? address, // API uses 'address_line1'
+            [property: JsonPropertyName("lgl_nm")] string? vendor_name,
+            [property: JsonPropertyName("ad_ln_1")] string? address,
             [property: JsonPropertyName("city")] string? city,
-            [property: JsonPropertyName("zip_code")] string? zip,       // API uses 'zip_code'
-            [property: JsonPropertyName("country")] string? country,
+            [property: JsonPropertyName("zip")] string? zip,
+            [property: JsonPropertyName("ctry")] string? country,
             [property: JsonPropertyName("master_agreement")] string? master_agreement,
             [property: JsonPropertyName("contract_name")] string? contract_name,
             [property: JsonPropertyName("award_date")] DateTime? award_date,
-            [property: JsonPropertyName("commodity")] string? commodity_id, // API uses 'commodity' for the commodity code/ID
+            [property: JsonPropertyName("commodity")] string? commodity_id,
             [property: JsonPropertyName("commodity_description")] string? commodity_description,
             [property: JsonPropertyName("line_item_description")] string? line_item_description,
-            [property: JsonPropertyName("po_qty")] decimal? quantity_ordered,         // API uses 'po_qty'
-            [property: JsonPropertyName("unit_of_measure_code")] string? unit_of_measure_code,
-            [property: JsonPropertyName("unit_of_measure_description")] string? unit_of_measure_description,
-            [property: JsonPropertyName("unit_prc")] decimal? unit_price,             // API uses 'unit_prc'
-            [property: JsonPropertyName("itm_tot_am")] decimal? line_item_total_amount // API uses 'itm_tot_am'
+            [property: JsonPropertyName("quantity")] string? quantity,
+            [property: JsonPropertyName("unit_of_measure")] string? unit_of_measure_code,
+            [property: JsonPropertyName("unit_of_meas_desc")] string? unit_of_measure_description,
+            [property: JsonPropertyName("unit_price")] string? unit_price,
+            [property: JsonPropertyName("itm_tot_am")] string? line_item_total_amount,
+            [property: JsonPropertyName("extended_description")] string? extended_description
         );
     }
 }
