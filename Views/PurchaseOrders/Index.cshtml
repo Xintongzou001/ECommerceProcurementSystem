@@ -3,11 +3,11 @@
 @using System.Globalization 
 @{
     ViewData["Title"] = "Purchase Orders (API)"; // Clarify data source in title
+    var page = ViewBag.Page as int? ?? 1;
 }
 
-<h2 class="mb-3">Purchase Orders <span class="badge bg-secondary">from API</span></h2> @* Added badge *@
+<h2 class="mb-3">Purchase Orders <span class="badge bg-secondary">from API</span></h2>
 
-@* Check if the Model has any data before rendering the table *@
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-warning" role="alert">
@@ -17,46 +17,36 @@
 else
 {
     <table class="table table-bordered table-striped table-hover">
-        @* Added hover effect *@
         <thead>
             <tr>
                 <th>PO Number</th>
                 <th>Vendor</th>
-                <th class="text-center">Total Lines</th> @* Centered header *@
-                <th class="text-end">Grand Total</th>   @* Removed ($) for cleaner formatting below *@
-                <th></th> @* Empty header for the Actions column *@
+                <th>Award Date</th>
+                <th>City</th>
+                <th>Commodity Description</th>
+                <th>Quantity</th>
+                <th>Line Total</th>
+                <th class="text-center">Total Lines</th>
+                <th class="text-end">Grand Total</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @* Loop through each PurchaseOrder object in the Model *@
             @foreach (var po in Model)
             {
-                // Calculate the total amount for the current purchase order's lines
-                // Handles cases where Line_Item_Total_Amount might be null
                 var total = po.Lines.Sum(l => l.Line_Item_Total_Amount ?? 0);
+                var firstLine = po.FirstLine;
                 <tr>
+                    <td>@po.Purchase_Order</td>
+                    <td>@po.Vendor?.VendorName</td>
+                    <td>@(po.Agreement?.Award_Date?.ToString("yyyy-MM-dd") ?? "")</td>
+                    <td>@po.Vendor?.City</td>
+                    <td>@firstLine?.Commodity?.Commodity_Description</td>
+                    <td>@firstLine?.Quantity_Ordered</td>
+                    <td>@(firstLine?.Line_Item_Total_Amount?.ToString("C", CultureInfo.CurrentCulture) ?? "")</td>
+                    <td class="text-center">@po.Lines.Count</td>
+                    <td class="text-end">@total.ToString("C", CultureInfo.CurrentCulture)</td>
                     <td>
-                        @* Display the Purchase Order number *@
-                        @po.Purchase_Order
-                    </td>
-                    <td>
-                        @* Safely display the Vendor Name using null-conditional operator *@
-                        @po.Vendor?.VendorName
-                    </td>
-                    <td class="text-center">
-                        @* Centered data *@
-                        @* Display the count of line items for this PO *@
-                        @po.Lines.Count
-                    </td>
-                    <td class="text-end">
-                        @* Display the calculated total, formatted as currency *@
-                        @* Using CultureInfo.CurrentCulture ensures correct local currency format *@
-                        @total.ToString("C", CultureInfo.CurrentCulture)
-                        @* Alternative: @total.ToString("N2") for just number format with 2 decimals *@
-                    </td>
-                    <td>
-                        @* --- ADDED DETAILS LINK --- *@
-                        @* Add a link to the Details action for this specific PO *@
                         <a asp-action="Details"
                            asp-controller="PurchaseOrders"
                            asp-route-id="@po.Purchase_Order"

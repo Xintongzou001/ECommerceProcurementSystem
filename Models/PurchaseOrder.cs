@@ -1,5 +1,6 @@
 ﻿// In PurchaseOrder.cs
 using System.Collections.Generic;
+using System.Linq; // Added for FirstOrDefault
 using ECommerceProcurementSystem.Models; // Assuming models are in this namespace
 
 namespace ECommerceProcurementSystem.Models
@@ -22,5 +23,8 @@ namespace ECommerceProcurementSystem.Models
 
         // Collection of line items - Initialize to satisfy CS8618
         public List<PurchaseOrderLine> Lines { get; set; } = new();
+
+        // Helper: Show a summary of the first line item (for table display)
+        public PurchaseOrderLine? FirstLine => Lines.FirstOrDefault();
     }
 }

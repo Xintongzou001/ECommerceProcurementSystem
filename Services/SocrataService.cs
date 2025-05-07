@@ -28,9 +28,9 @@ namespace ECommerceProcurementSystem.Services
             int limit = 1000,
             int offset = 0)
         {
-            // Use SoQL for limit and offset
             string uri = $"/resource/{_datasetId}.json?$limit={limit}&$offset={offset}";
             List<RawRow> rawRows = await _http.GetFromJsonAsync<List<RawRow>>(uri) ?? new();
+            // Only map navigation properties, do not flatten fields
             return MapRawRowsToPurchaseOrders(rawRows);
         }
 
