@@ -35,13 +35,13 @@ namespace ECommerceProcurementSystem.Controllers
             if (_context.AnnualReports == null)
                 return Problem("Entity set 'ProcurementContext.AnnualReports' is null.");
 
-            // If no data, import from Socrata API (limit 20)
+            // If no data, import from Socrata API (limit 50)
             if (!await _context.AnnualReports.AnyAsync())
             {
                 try
                 {
                     // Step 1: Get the data from Socrata API
-                    var importedReports = await _socrataService.GetAnnualReportsFromSocrataAsync(20);
+                    var importedReports = await _socrataService.GetAnnualReportsFromSocrataAsync(50);
                     
                     // Step 2: Process vendors first (they're referenced by AnnualReports)
                     var vendorCodes = importedReports
