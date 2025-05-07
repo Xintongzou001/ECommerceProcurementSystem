@@ -49,6 +49,42 @@ namespace ECommerceProcurementSystem.Controllers // Ensure namespace matches you
             return Json(data);
         }
 
+        /// <summary>
+        /// API endpoint: returns total sales by vendor for Chart.js
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetVendorSalesData()
+        {
+            var data = await _context.AnnualReports
+                .GroupBy(r => r.Vendor_Code)
+                .Select(g => new {
+                    VendorCode = g.Key,
+                    VendorName = _context.Vendors.FirstOrDefault(v => v.Vendor_Code == g.Key).VendorName,
+                    TotalSales = g.Sum(x => x.SaleAmount)
+                })
+                .OrderByDescending(x => x.TotalSales)
+                .ToListAsync();
+            return Json(data);
+        }
+
+        /// <summary>
+        /// API endpoint: returns total sales by city for Chart.js
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetCitySalesData()
+        {
+            var data = await _context.AnnualReports
+                .GroupBy(r => r.CityID)
+                .Select(g => new {
+                    CityID = g.Key,
+                    CityName = _context.Cities.FirstOrDefault(c => c.CityID == g.Key).CityName,
+                    TotalSales = g.Sum(x => x.SaleAmount)
+                })
+                .OrderByDescending(x => x.TotalSales)
+                .ToListAsync();
+            return Json(data);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
